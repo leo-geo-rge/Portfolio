@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+</head>
+<body>
+
+<h2>Student Dashboard</h2>
+
+<button onclick="logout()" style="float:right;">Logout</button>
+<br><br>
+
+<button onclick="loadEvents()">View Events</button>
+
+<div id="events"></div>
+
+<h3>My Registered Events</h3>
+<div id="myEvents"></div>
+
+<script>
+
+let currentUserId = localStorage.getItem("user_id");
+
+function logout(){
+    localStorage.removeItem("user_id");   // remove login info
+    alert("Logged out successfully!");
+    window.location.href = "index.html";  // redirect to login page
+}
+
+function loadEvents(){
+    fetch("/events")
+    .then(res => res.json())
+    .then(data => {
+
+        let output = "";
+
+        if(data.length === 0){
+            output = "<p>No events available</p>";
+        }
+
+        data.forEach(event => {
+            output += `
+                <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                    <h3>${event.event_name}</h3>
+                    <p>Date: ${event.event_date}</p>
+                    <p>Type: ${event.event_type}</p>
+                    <p>Venue: ${event.venue}</p>
+                    <button onclick="goToRegister(${event.event_id})">
+                        Register
+                    </button>
+                </div>
+            `;
+        });
+
+        document.getElementById("events").innerHTML = output;
+    });
+}
+
+function goToRegister(eventId){
+    window.location.href = "event_registration.html?event_id=" + eventId;
+}
+
+function registerEvent(eventId){
+
+    if(!currentUserId){
+        alert("Please login again.");
+        return;
+    }
+
+    fetch("/register-event", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: currentUserId,
+            event_id: eventId
+        })
+    })
+    .then(res => res.text())
+    .then(msg => alert(msg));
+}
+
+function loadMyEvents(){
+    fetch("/my-events/" + localStorage.getItem("user_id"))
+    .then(res => res.json())
+    .then(data => {
+
+        let output = "";
+
+        if(data.length === 0){
+            output = "No registrations yet.";
+        }
+
+        data.forEach(e=>{
+            output += `<p>${e.event_name} - ${e.event_date}</p>`;
+        });
+
+        document.getElementById("myEvents").innerHTML = output;
+    });
+}
+
+window.onload = function(){
+    if(!currentUserId){
+        window.location.href = "index.html"; // prevent direct access without login
+    }
+    loadEvents();
+    loadMyEvents();
+};
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Expenses</title>
+</head>
+<body>
+
+<h2>All Expenses</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Event</th>
+            <th>Expense Type</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody id="expenseTable"></tbody>
+</table>
+
+<script>
+
+function loadExpenses() {
+    fetch("/expenses")
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.getElementById("expenseTable");
+        tbody.innerHTML = "";
+
+        data.forEach(ex => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${ex.expense_id}</td>
+                    <td>${ex.event_name}</td>
+                    <td>${ex.expense_type}</td>
+                    <td>${ex.amount}</td>
+                    <td>${ex.expense_date}</td>
+                </tr>
+            `;
+        });
+    });
+}
+
+window.onload = loadExpenses;
+
+</script>
+
+</body>
+</html>

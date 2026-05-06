@@ -1,0 +1,102 @@
+main{
+    background-color: rgb(1, 52, 32);
+    color: rgb(186, 39, 6);
+}
+header{
+    background: url("Leo2.jpg") no-repeat center center/cover;
+    padding: 1rem 0;
+    h1{
+    color: rgb(252, 252, 252);
+    text-align: center;
+}
+}
+nav ul li{
+    justify-content: space-around;
+    display: inline;
+    margin: 0 140px;
+}
+
+#about{
+    background: url("Leo1.gif") no-repeat center center/cover;
+    h2{
+        color: rgb(92, 4, 4);
+        text-align: center;
+    }
+    h3{
+        color: rgb(177, 62, 21);
+        text-align: center;
+    }
+    p{
+        color: cornsilk;
+        
+        text-align: center;
+    }
+    a{
+        text-align: center
+    }
+}
+#skills{
+    display: inline-flex;
+    flex-direction:row;
+    width:auto;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 5rem;
+    text-align: center;
+    color: black;
+
+}
+#projects{
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-direction: row;
+    text-align: center;
+    
+}
+#card{
+    display: flex;
+    border-radius: 30px;
+    padding: 40px;
+    color: rgb(5, 5, 5);
+    flex: 5;
+    box-shadow: 5px 5px 5px;
+    background-color: rgb(226, 214, 214);
+    flex-wrap: wrap;
+    margin-left: 20px;
+    width: 1000px;
+    height: 150px;
+    justify-content: space-between;
+    text-align: center;
+}
+
+#cards{
+    display: inline-flex;
+    border-radius: 30px;
+    padding: 10px;
+    gap: 2rem;
+    color: rgb(14, 1, 1);
+    flex: 1;
+    box-shadow: 0 5px 5px;
+    background-color: rgb(226, 214, 214);
+    flex-direction: column;
+    width: 200px;
+    height: 200px;
+    margin-left: 20px;
+    justify-content: space-around;
+}
+
+
+
+#contact {
+    text-align: center;
+}
+
+#links {
+    display: inline-flex;
+    margin: 4 20px;
+    gap: 2rem;
+}
+footer{
+    text-align: center;
+}

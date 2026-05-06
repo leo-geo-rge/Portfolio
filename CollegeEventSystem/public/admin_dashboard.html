@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 10px 0;
+            padding: 8px;
+            background: #34495e;
+            border-radius: 4px;
+        }
+
+        .sidebar a:hover {
+            background: #1abc9c;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            border: none;
+            width: 100%;
+            padding: 8px;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .event-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        th {
+            background: #f4f4f4;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-top: 10px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Admin</h2>
+
+    <a href="add_event.html">Add Event</a>
+    <a href="assign_budget.html">Assign Budget</a>
+    <a href="approve_budgets.html">Budget Status</a>
+    <a href="add_expense.html">Add Expense</a>
+    <a href="view_expenses.html">View Expenses</a>
+    <a href="add_sponsor.html">Add Sponsor</a>
+    <a href="assign_sponsor.html">Assign Sponsor</a>
+    <a href="view_budgets.html">View Budgets</a>
+
+    <br>
+    <button onclick="loadEvents()">Load Events</button>
+
+    <!-- LOGOUT BUTTON -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+    <h1>Admin Dashboard</h1>
+    <div id="eventList"></div>
+</div>
+
+<script>
+
+// 🔐 Prevent direct access without login
+if(!localStorage.getItem("user_id")){
+    window.location.href = "index.html";
+}
+
+function logout(){
+    localStorage.removeItem("user_id");
+    alert("Logged out successfully!");
+    window.location.href = "index.html";
+}
+
+function loadEvents() {
+    fetch("/events")
+    .then(res => res.json())
+    .then(events => {
+
+        let output = "";
+
+        if(events.length === 0){
+            output = "<p>No Events Found</p>";
+            document.getElementById("eventList").innerHTML = output;
+            return;
+        }
+
+        events.forEach(event => {
+
+            output += `
+                <div class="event-card">
+                    <h3>${event.event_name}</h3>
+                    <p>Date: ${event.event_date}</p>
+                    <p>Venue: ${event.venue || ""}</p>
+
+                    <h4>Participants</h4>
+                    <div id="participants-${event.event_id}">
+                        Loading participants...
+                    </div>
+                </div>
+            `;
+
+            fetch("/participants/" + event.event_id)
+            .then(res => res.json())
+            .then(participants => {
+
+                let partOutput = "";
+
+                if(participants.length === 0){
+                    partOutput = "<p>No Participants Yet</p>";
+                } else {
+                    partOutput = `
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>Registration Date</th>
+                            </tr>
+                    `;
+
+                    participants.forEach(p => {
+                        partOutput += `
+                            <tr>
+                                <td>${p.student_name}</td>
+                                <td>${p.department}</td>
+                                <td>${p.year}</td>
+                                <td>${p.registration_date}</td>
+                            </tr>
+                        `;
+                    });
+
+                    partOutput += "</table>";
+                }
+
+                document.getElementById("participants-" + event.event_id)
+                    .innerHTML = partOutput;
+
+            });
+
+        });
+
+        document.getElementById("eventList").innerHTML = output;
+    });
+}
+
+</script>
+
+</body>
+</html>

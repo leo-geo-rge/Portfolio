@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Budgets</title>
+</head>
+<body>
+
+<h2>Assigned Budgets</h2>
+<h3>Total Approved Budget: ₹ <span id="totalApproved">0</span></h3>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Budget ID</th>
+            <th>Event</th>
+            <th>Allocated</th>
+            <th>Approved</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="budgetTable"></tbody>
+</table>
+
+<script>
+
+function loadBudgets() {
+    fetch("/budgets")
+    .then(res => res.json())
+    .then(data => {
+
+        const tbody = document.getElementById("budgetTable");
+        tbody.innerHTML = "";
+
+        // Set total approved
+        document.getElementById("totalApproved").innerText = data.totalApproved;
+
+        data.budgets.forEach(b => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${b.budget_id}</td>
+                    <td>${b.event_name}</td>
+                    <td>${b.allocated_amount}</td>
+                    <td>${b.approved_amount}</td>
+                    <td>${b.status}</td>
+                </tr>
+            `;
+        });
+    });
+}
+window.onload = loadBudgets;
+</script>
+
+</body>
+</html>

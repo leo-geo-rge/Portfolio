@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sponsorship Management</title>
+</head>
+<body>
+
+<h2>Add Sponsor</h2>
+
+<form id="addSponsorForm">
+    <input type="text" id="name" placeholder="Sponsor Name" required><br><br>
+    <input type="text" id="company" placeholder="Company Name" required><br><br>
+    <input type="text" id="contact" placeholder="Contact Number" required><br><br>
+    <button type="submit">Add Sponsor</button>
+</form>
+
+<hr>
+
+<h2>Assign Sponsor to Event</h2>
+
+<form id="assignSponsorForm">
+    <label>Select Sponsor:</label><br>
+    <select id="sponsorSelect" required></select><br><br>
+
+    <label>Select Event:</label><br>
+    <select id="eventSelect" required></select><br><br>
+
+    <input type="number" id="amount" placeholder="Sponsorship Amount" required><br><br>
+
+    <button type="submit">Assign Sponsorship</button>
+</form>
+
+<hr>
+
+<h2>Sponsorship List</h2>
+<table border="1" id="sponsorshipTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sponsor</th>
+            <th>Event</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<hr>
+
+<h2>Total Sponsorship Per Event</h2>
+<table border="1" id="summaryTable">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Total Sponsorship</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+
+// Load sponsors dropdown
+function loadSponsors() {
+    fetch("/sponsors")
+    .then(res => res.json())
+    .then(data => {
+        const select = document.getElementById("sponsorSelect");
+        select.innerHTML = "<option value=''>-- Select Sponsor --</option>";
+        data.forEach(s => {
+            select.innerHTML += `<option value="${s.sponsor_id}">${s.sponsor_name}</option>`;
+        });
+    });
+}
+
+// Load events dropdown
+function loadEvents() {
+    fetch("/events")
+    .then(res => res.json())
+    .then(data => {
+        const select = document.getElementById("eventSelect");
+        select.innerHTML = "<option value=''>-- Select Event --</option>";
+        data.forEach(e => {
+            select.innerHTML += `<option value="${e.event_id}">${e.event_name}</option>`;
+        });
+    });
+}
+
+// Load sponsorship list
+function loadSponsorships() {
+    fetch("/sponsorships")
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.querySelector("#sponsorshipTable tbody");
+        tbody.innerHTML = "";
+        data.forEach(s => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${s.sponsorship_id}</td>
+                    <td>${s.sponsor_name}</td>
+                    <td>${s.event_name}</td>
+                    <td>${s.amount}</td>
+                </tr>
+            `;
+        });
+    });
+}
+
+// Load summary
+function loadSummary() {
+    fetch("/sponsorship-summary")
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.querySelector("#summaryTable tbody");
+        tbody.innerHTML = "";
+        data.forEach(s => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${s.event_name}</td>
+                    <td>${s.total_sponsorship}</td>
+                </tr>
+            `;
+        });
+    });
+}
+
+// Add sponsor
+document.getElementById("addSponsorForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/add-sponsor", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            sponsor_name: document.getElementById("name").value,
+            company: document.getElementById("company").value,
+            contact_no: document.getElementById("contact").value
+        })
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        loadSponsors();
+    });
+});
+
+// Assign sponsor
+document.getElementById("assignSponsorForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/assign-sponsor", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            sponsor_id: document.getElementById("sponsorSelect").value,
+            event_id: document.getElementById("eventSelect").value,
+            amount: document.getElementById("amount").value
+        })
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        loadSponsorships();
+        loadSummary();
+    });
+});
+
+window.onload = function() {
+    loadSponsors();
+    loadEvents();
+    loadSponsorships();
+    loadSummary();
+};
+
+</script>
+
+</body>
+</html>

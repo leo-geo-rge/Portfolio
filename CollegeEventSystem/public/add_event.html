@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Event</title>
+</head>
+<body>
+  <h2>Create Event</h2>
+
+<form id="eventForm">
+    <input type="text" id="name" placeholder="Event Name" required><br><br>
+    <input type="text" id="type" placeholder="Event Type"><br><br>
+    <input type="date" id="date"><br><br>
+    <input type="text" id="venue" placeholder="Venue"><br><br>
+    <button type="submit">Create Event</button>
+</form>
+
+<script>
+document.getElementById("eventForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/add-event", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            event_name: document.getElementById("name").value,
+            event_type: document.getElementById("type").value,
+            event_date: document.getElementById("date").value,
+            venue: document.getElementById("venue").value
+        })
+    })
+    .then(res => res.text())
+    .then(data => alert(data));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Registration</title>
+</head>
+<body>
+
+<h2>Event Registration</h2>
+
+<form onsubmit="submitRegistration(event)">
+    
+    <label>Your Name:</label><br>
+    <input type="text" id="student_name" required><br><br>
+
+    <label>Department:</label><br>
+    <input type="text" id="department" required><br><br>
+
+    <label>Year:</label><br>
+    <input type="text" id="year" required><br><br>
+
+    <button type="submit">Register</button>
+
+</form>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search);
+const eventId = urlParams.get("event_id");
+const userId = localStorage.getItem("user_id");
+
+function submitRegistration(e){
+    e.preventDefault();
+
+    const student_name = document.getElementById("student_name").value;
+    const department = document.getElementById("department").value;
+    const year = document.getElementById("year").value;
+
+    fetch("/register-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            user_id: userId,
+            event_id: eventId,
+            student_name,
+            department,
+            year
+        })
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        window.location.href = "student_dashboard.html";
+    });
+}
+
+</script>
+
+</body>
+</html>

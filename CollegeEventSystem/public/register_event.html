@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register for Event</title>
+</head>
+<body>
+
+<h2>Register for Event</h2>
+
+<select id="eventSelect"></select>
+<button onclick="registerEvent()">Register</button>
+
+<script>
+
+let currentUserId = localStorage.getItem("user_id"); // store after login
+
+function loadEvents() {
+    fetch("/events")
+    .then(res => res.json())
+    .then(data => {
+        const select = document.getElementById("eventSelect");
+        select.innerHTML = "";
+
+        data.forEach(event => {
+            select.innerHTML += `
+                <option value="${event.event_id}">
+                    ${event.event_name}
+                </option>
+            `;
+        });
+    });
+}
+
+function registerEvent() {
+    const event_id = document.getElementById("eventSelect").value;
+
+    fetch("/register-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            user_id: currentUserId,
+            event_id: event_id
+        })
+    })
+    .then(res => res.text())
+    .then(msg => alert(msg));
+}
+
+window.onload = loadEvents;
+
+</script>
+
+</body>
+</html>

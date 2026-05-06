@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Sponsor</title>
+</head>
+<body>
+    <h2>Add Sponsor</h2>
+    <form id="sponsorForm">
+        <input type="text" placeholder="Sponsor Name" id="name"><br><br>
+        <input type="text" placeholder="Company" id="company"><br><br>
+        <input type="text" placeholder="Contact No" id="contact"><br><br>
+        <button type="submit">Add Sponsor</button>
+    </form>
+
+<script>
+document.getElementById("sponsorForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/add-sponsor", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            sponsor_name: document.getElementById("name").value,
+            company: document.getElementById("company").value,
+            contact_no: document.getElementById("contact").value
+        })
+    })
+    .then(res => res.text())
+    .then(data => alert(data));
+});
+</script>
+</body>
+</html>

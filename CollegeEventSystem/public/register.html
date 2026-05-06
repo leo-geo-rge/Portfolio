@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Student Account</title>
+</head>
+<body>
+    <h2>Create Student Account</h2>
+
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Username" required><br><br>
+        <input type="password" id="password" placeholder="Password" required><br><br>
+        <button type="submit">Create Account</button>
+    </form>
+
+    <br>
+    <p>
+        Already have an account?
+        <a href="login.html">Back to Login</a>
+    </p>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.text();
+    })
+    .then(msg => {
+        alert(msg);
+        window.location.href = "index.html";
+    })
+    .catch(() => alert("Username already exists"));
+});
+</script>
+
+</body>
+</html>

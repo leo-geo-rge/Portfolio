@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - View Budget Status</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        button {
+            padding: 6px 12px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Admin - Approve / Reject Budgets</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Budget ID</th>
+            <th>Event</th>
+            <th>Allocated Amount</th>
+            <th>Approved Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="budgetTable">
+        <!-- Data loads here -->
+    </tbody>
+</table>
+
+<script>
+
+function loadBudgets() {
+    fetch("/budget-status")
+    .then(res => res.json())
+    .then(data => {
+
+        const table = document.getElementById("budgetTable");
+        table.innerHTML = "";
+
+        if (data.length === 0) {
+            table.innerHTML = "<tr><td colspan='6'>No Budgets Found</td></tr>";
+            return;
+        }
+
+        data.forEach(b => {
+
+            let actionButtons = "";
+
+            if (b.status === "Pending") {
+                actionButtons = `
+                    <button onclick="approve(${b.budget_id})">Approve</button>
+                    <button onclick="reject(${b.budget_id})">Reject</button>
+                `;
+            } else {
+                actionButtons = "No Action";
+            }
+
+            table.innerHTML += `
+                <tr>
+                    <td>${b.budget_id}</td>
+                    <td>${b.event_name}</td>
+                    <td>₹ ${b.allocated_amount}</td>
+                    <td>₹ ${b.approved_amount}</td>
+                    <td>${b.status}</td>
+                    <td>${actionButtons}</td>
+                </tr>
+            `;
+        });
+    })
+    .catch(err => {
+        console.error("Error loading budgets:", err);
+    });
+}
+
+function approve(id) {
+    fetch(`/approve-budget/${id}`, { method: "POST" })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        loadBudgets();
+    });
+}
+
+function reject(id) {
+    fetch(`/reject-budget/${id}`, { method: "POST" })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        loadBudgets();
+    });
+}
+
+window.onload = loadBudgets;
+
+</script>
+
+</body>
+</html>
