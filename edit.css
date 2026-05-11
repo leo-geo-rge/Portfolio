@@ -3,6 +3,7 @@ body{
 }
 .container{
     display: flex;
+    flex-wrap: wrap;
    
 }
 #vdo{
@@ -19,6 +20,7 @@ body{
     border-radius: 20px;
     height: auto;
     width: auto;
+    flex-wrap: wrap;
 
 }
 #lin{
@@ -27,6 +29,7 @@ body{
     color: white;
     box-sizing: border-box;
     display: flex;
+    flex-wrap: wrap;
     padding: 5px;
     box-shadow: 0 1px 10px rgb(23, 67, 170);
     flex: 5;
