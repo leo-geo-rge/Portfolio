@@ -1,6 +1,6 @@
 main{
     background-color: rgb(1, 52, 32);
-    color: rgb(186, 39, 6);
+    color: rgb(186, 162, 6);
 }
 header{
     background: url("Leo2.jpg") no-repeat center center/cover;
@@ -99,4 +99,9 @@ nav ul li{
 }
 footer{
     text-align: center;
+}
+#h2{
+    text-align:start;
+    padding: 40px;
+    color: burlywood;
 }
